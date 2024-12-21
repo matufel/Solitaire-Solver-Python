@@ -164,6 +164,7 @@ class Board:
         str_1 : str = f"##{self.draw_pile.size()}   \n"
         str_2 : str = f"##   {self.drawn_cards}     \n"
         str_3 : str = f"##                          \n"
+        str_4 : str = f"{self.columns}"
         return str_0 + str_1 + str_2 + str_3
 
 deck : Deck = Deck()
