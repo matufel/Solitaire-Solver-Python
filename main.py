@@ -7,7 +7,7 @@ class Suite:
         self.color = set_color
         self.name = set_name
 
-SUITES = (Suite("red", "Hearts"), Suite("black", "Clubs"), Suite("red", "Diamonds"), Suite("black", "Clover"))
+SUITES = (Suite("red", "Hearts"), Suite("black", "Clubs"), Suite("red", "Diamonds"), Suite("black", "Spades"))
 
 class Card:
     """Models a card
@@ -18,7 +18,16 @@ class Card:
         self.suite = set_suite
 
     def __str__(self):
-        return(f"{self.value} of {self.suite.name}")
+        display_value = self.value
+        if (display_value == 1):
+            display_value = "A"
+        elif (display_value == 11):
+            display_value = "J"
+        elif (display_value == 12):
+            display_value = "Q"
+        elif (display_value == 13):
+            display_value = "K"
+        return(f"{display_value}{self.suite.name[0]}")
 
 class Deck:
     """Models a deck
@@ -41,7 +50,7 @@ class Deck:
     def print_deck(self):
         string : str = ""
         for card in self.deck:
-            string += f"{card.value} of {card.suite.name}, "
+            string += f"{card}, "
         print(string[:-1])
 
     def shuffle(self):
@@ -108,6 +117,22 @@ class Deck:
         """
         return self.deck
 
+    def size(self) -> int:
+        """Gets the size of the deck.
+
+        Returns:
+            int: The size of the deck
+        """
+        return len(self.deck)
+
+    def __str__(self):
+        string = ""
+        if (len(self.deck) != 0):
+            for card in self.deck:
+                string += f" {card}"
+            return string
+        return "[]"
+
 class Board:
     """Models the entire board including all of its areas. Needs a deck to be innitaited as it also places the cards 
     in the approprriate palces.
@@ -115,26 +140,42 @@ class Board:
     class Goal_Area:
         """Models the goal area of the bord. Must have a valid SUITS global
         """
-        def __init__(self, area0 : list[Card], area1 : list[Card], area2 : list[Card], area3 : list[Card]):
+        def __init__(self):
             #Order of the areas in terms of suite is the same as of the global SUITS variable
-            self.areas = [Deck(area0), Deck(area1), Deck(area2), Deck(area3)]  
+            self.areas =  None          
 
-    def __init__(self, deck: Deck):
-        self.goal_area = self.Goal_Area() #Area where the cards should be placed to win
-        self.columns = [None for i in range(6)] #Columns of cards on the main area. Each pile is treated as a face down deck
-        self.drawn_cards = Deck([])     #The Drawn cards from the draw pile
-        self.draw_pile = None           #Place to draw from
+        def fill(area0 : list[Card], area1 : list[Card], area2 : list[Card], area3 : list[Card]):
+            pass
+
+    def __init__(self):
+        self.goal_area : self.Goal_Area = self.Goal_Area() #Area where the cards should be placed to win
+        self.columns : list[Deck]= [Deck([]) for i in range(6)] #Columns of cards on the main area. Each pile is treated as a face down deck
+        self.drawn_cards : Deck = Deck([])     #The Drawn cards from the draw pile
+        self.draw_pile : Deck = Deck([])           #Place to draw from
+
+    def make_random_game(self, deck: Deck):
         #Fill the columns with the appropriate amount of cards
-        for i in range(len(6)):
+        for i in range(1,8):
             self.columns = Deck(deck.draw_cards_face_down(i))
+        self.draw_pile = deck       #Assign the rest of the cards to the draw pile
 
+    def __str__(self):
+        str_0 : str = f"\n"
+        str_1 : str = f"##{self.draw_pile.size()}   \n"
+        str_2 : str = f"##   {self.drawn_cards}     \n"
+        str_3 : str = f"##                          \n"
+        return str_0 + str_1 + str_2 + str_3
 
 deck : Deck = Deck()
+board : Board = Board()
 # deck.print_deck()
 deck.shuffle()
 
 
 deck.print_deck()
-deck.add_card_face_up([Card(1, SUITES[0]), Card(2, SUITES[0])])
-deck.print_deck()
+
+
+board.make_random_game(deck)
+
+print(board)
 
