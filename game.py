@@ -125,6 +125,14 @@ class Deck:
         """
         return len(self.deck)
 
+    def view_top_card_face_down(self) -> Card:
+        """Returns the top card of a facedown the deck without modifying its order
+
+        Returns:
+            Card: The top card of a facedown deck
+        """
+        return self.deck[0]
+
     def __str__(self):
         string = ""
         if (len(self.deck) != 0):
@@ -155,8 +163,8 @@ class Board:
 
     def make_random_game(self, deck: Deck):
         #Fill the columns with the appropriate amount of cards
-        for i in range(1,8):
-            self.columns = Deck(deck.draw_cards_face_down(i))
+        for i in range(len(self.columns)):
+            self.columns[i] = Deck(deck.draw_cards_face_down(i+1))
         self.draw_pile = deck       #Assign the rest of the cards to the draw pile
 
     def __str__(self):
@@ -164,5 +172,7 @@ class Board:
         str_1 : str = f"##{self.draw_pile.size()}   \n"
         str_2 : str = f"##   {self.drawn_cards}     \n"
         str_3 : str = f"##                          \n"
-        str_4 : str = f"{self.columns}"
+        str_4 : str = ""
+        for column in self.columns:
+            str_4 += "#"*(column.size()-1) + f"{column.view_top_card_face_down()}\n"
         return str_0 + str_1 + str_2 + str_3 + str_4
