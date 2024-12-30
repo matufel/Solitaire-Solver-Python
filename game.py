@@ -8,6 +8,7 @@ class Suite:
         self.name = set_name
 
 SUITES = (Suite("red", "Hearts"), Suite("black", "Clubs"), Suite("red", "Diamonds"), Suite("black", "Spades"))
+COLUMN_COUNT = 6
 
 class Card:
     """Models a card
@@ -125,13 +126,13 @@ class Deck:
         """
         return len(self.deck)
 
-    def view_top_card_face_down(self) -> Card:
+    def view_top_cards_face_down(self, amount : int = 1) -> list[Card]:
         """Returns the top card of a facedown the deck without modifying its order
 
         Returns:
             Card: The top card of a facedown deck
         """
-        return self.deck[0]
+        return self.deck[:amount]
 
     def __str__(self):
         string = ""
@@ -155,16 +156,30 @@ class Board:
         def fill(area0 : list[Card], area1 : list[Card], area2 : list[Card], area3 : list[Card]):
             pass
 
+    class Column:
+        """Models a column of the board
+        """
+        def __init__(self, cards : Deck):
+            self.reavealed : int= 1
+            self.cards : Deck = cards
+
+        def __str__(self):
+            str_0 = "#" * (self.cards.size() - self.reavealed) 
+            str_1 = ""
+            for card in self.cards.view_top_cards_face_down(self.reavealed):
+                str_1 += str(card)
+            return str_0 + str_1
+
     def __init__(self):
         self.goal_area : self.Goal_Area = self.Goal_Area() #Area where the cards should be placed to win
-        self.columns : list[Deck]= [Deck([]) for i in range(6)] #Columns of cards on the main area. Each pile is treated as a face down deck
+        self.columns : list[self.Column]= [self.Column(Deck([])) for i in range(COLUMN_COUNT)] #Columns of cards on the main area. Each pile is treated as a face down deck
         self.drawn_cards : Deck = Deck([])     #The Drawn cards from the draw pile
         self.draw_pile : Deck = Deck([])           #Place to draw from
 
     def make_random_game(self, deck: Deck):
         #Fill the columns with the appropriate amount of cards
         for i in range(len(self.columns)):
-            self.columns[i] = Deck(deck.draw_cards_face_down(i+1))
+            self.columns[i] = self.Column(Deck(deck.draw_cards_face_down(i+1)))
         self.draw_pile = deck       #Assign the rest of the cards to the draw pile
 
     def __str__(self):
@@ -174,5 +189,5 @@ class Board:
         str_3 : str = f"##                          \n"
         str_4 : str = ""
         for column in self.columns:
-            str_4 += "#"*(column.size()-1) + f"{column.view_top_card_face_down()}\n"
+            str_4 += f"{column}\n"
         return str_0 + str_1 + str_2 + str_3 + str_4
