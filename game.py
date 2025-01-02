@@ -32,6 +32,13 @@ class Card:
 
 class Deck:
     """Models a deck
+        Structure of the deck list:
+
+        If face down:
+        bottom [#,#,#,#,#,#,#,#,#] top
+
+        If face up:
+        top [#,#,#,#,#,#,#,#,#] bottom
     """
     #First element of the deck list is the card on top of the deck if it is face down
     def __init__(self, cards : list[Card] = None):
@@ -67,9 +74,10 @@ class Deck:
         Args:
             amount (int, optional): _description_. Defaults to 1.
         """
-        cards = self.deck[:amount]
-        self.deck = self.deck[amount:]
+        cards = self.deck[len(self.deck)-amount:]
+        self.deck = self.deck[:len(self.deck)-amount]
         return cards
+        
     
     def draw_cards_face_up(self, amount : int = 1) -> list[Card]:
         """Draw cards from the top of the deck assuming it is faced up. 
@@ -78,9 +86,10 @@ class Deck:
         Args:
             amount (int, optional): _description_. Defaults to 1.
         """
-        cards = self.deck[len(self.deck)-amount:]
-        self.deck = self.deck[:len(self.deck)-amount]
+        cards = self.deck[:amount]
+        self.deck = self.deck[amount:]
         return cards
+        
     
     def add_card_face_down(self, cards : Card | list[Card]):
         """Adds card to the top of the deck. Assumes the deck is face down.
@@ -90,9 +99,9 @@ class Deck:
             cards (Card | list[Card]): Card or list of cards to add
         """
         if (type(cards) == Card):
-            self.deck.insert(0, cards)
+            self.deck.append( cards)
         elif(type(cards) == list):
-            self.deck = cards + self.deck
+            self.deck = self.deck + cards
         else:
             return
         
@@ -104,11 +113,12 @@ class Deck:
             cards (Card | list[Card]): Card or list of cards to add
         """
         if (type(cards) == Card):
-            self.deck.append( cards)
+            self.deck.insert(0, cards)
         elif(type(cards) == list):
-            self.deck = self.deck + cards
+            self.deck = cards + self.deck
         else:
             return
+        
         
     def get_list(self) -> list[Card]:
         """Returns the deck as a list which respects all of the orderings
@@ -132,7 +142,7 @@ class Deck:
         Returns:
             Card: The top card of a facedown deck
         """
-        return self.deck[:amount]
+        return self.deck[len(self.deck) - amount:]
 
     def __str__(self):
         string = ""
@@ -163,6 +173,17 @@ class Board:
             self.reavealed : int= 1
             self.cards : Deck = cards
 
+        def get_column_str_reavealed(self) -> str:
+            """Returns a string representing the column but has all of the cards reaveled
+
+            Returns:
+                str: string representation of the column with revealed cards
+            """
+            str_0 = ""
+            for card in self.cards.view_top_cards_face_down(self.cards.size()):
+                str_0 += str(card)
+            return str_0
+
         def __str__(self):
             str_0 = "#" * (self.cards.size() - self.reavealed) 
             str_1 = ""
@@ -172,7 +193,7 @@ class Board:
 
     def __init__(self):
         self.goal_area : self.Goal_Area = self.Goal_Area() #Area where the cards should be placed to win
-        self.columns : list[self.Column]= [self.Column(Deck([])) for i in range(COLUMN_COUNT)] #Columns of cards on the main area. Each pile is treated as a face down deck
+        self.columns : list[self.Column] = [self.Column(Deck([])) for i in range(COLUMN_COUNT)] #Columns of cards on the main area. Each pile is treated as a face down deck
         self.drawn_cards : Deck = Deck([])     #The Drawn cards from the draw pile
         self.draw_pile : Deck = Deck([])           #Place to draw from
 
@@ -182,7 +203,17 @@ class Board:
             self.columns[i] = self.Column(Deck(deck.draw_cards_face_down(i+1)))
         self.draw_pile = deck       #Assign the rest of the cards to the draw pile
 
-    def __str__(self):
+    def display_board_not_hidden(self) -> None:
+        str_0 : str = f"\n"
+        str_1 : str = f"##{self.draw_pile.size()}   \n"
+        str_2 : str = f"##   {self.drawn_cards}     \n"
+        str_3 : str = f"##                          \n"
+        str_4 : str = ""
+        for column in self.columns:
+            str_4 += f"{column.get_column_str_reavealed()}\n"
+        print(str_0 + str_1 + str_2 + str_3 + str_4)
+
+    def __str__(self) -> str:
         str_0 : str = f"\n"
         str_1 : str = f"##{self.draw_pile.size()}   \n"
         str_2 : str = f"##   {self.drawn_cards}     \n"

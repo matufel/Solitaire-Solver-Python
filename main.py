@@ -12,4 +12,5 @@ deck.print_deck()
 board.make_random_game(deck)
 
 print(board)
+board.display_board_not_hidden()
 
