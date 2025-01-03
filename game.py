@@ -152,21 +152,7 @@ class Deck:
             return string
         return "[]"
 
-class Board:
-    """Models the entire board including all of its areas. Needs a deck to be innitaited as it also places the cards 
-    in the approprriate palces.
-    """
-    class Goal_Area:
-        """Models the goal area of the bord. Must have a valid SUITS global
-        """
-        def __init__(self):
-            #Order of the areas in terms of suite is the same as of the global SUITS variable
-            self.areas =  None          
-
-        def fill(area0 : list[Card], area1 : list[Card], area2 : list[Card], area3 : list[Card]):
-            pass
-
-    class Column:
+class Column:
         """Models a column of the board
         """
         def __init__(self, cards : Deck):
@@ -184,6 +170,12 @@ class Board:
                 str_0 += str(card)
             return str_0
 
+        def take_card(self) -> Card:
+            return self.cards.draw_cards_face_down()
+
+        def add_card(self, card : Card) -> None:
+            self.cards.add_card_face_down(card)
+
         def __str__(self):
             str_0 = "#" * (self.cards.size() - self.reavealed) 
             str_1 = ""
@@ -191,16 +183,31 @@ class Board:
                 str_1 += str(card)
             return str_0 + str_1
 
+class Board:
+    """Models the entire board including all of its areas. Needs a deck to be innitaited as it also places the cards 
+    in the approprriate palces.
+    """
+    class Goal_Area:
+        """Models the goal area of the bord. Must have a valid SUITS global
+        """
+        def __init__(self):
+            #Order of the areas in terms of suite is the same as of the global SUITS variable
+            self.areas =  None          
+
+        def fill(area0 : list[Card], area1 : list[Card], area2 : list[Card], area3 : list[Card]):
+            pass
+
+
     def __init__(self):
         self.goal_area : self.Goal_Area = self.Goal_Area() #Area where the cards should be placed to win
-        self.columns : list[self.Column] = [self.Column(Deck([])) for i in range(COLUMN_COUNT)] #Columns of cards on the main area. Each pile is treated as a face down deck
+        self.columns : list[Column] = [Column(Deck([])) for i in range(COLUMN_COUNT)] #Columns of cards on the main area. Each pile is treated as a face down deck
         self.drawn_cards : Deck = Deck([])     #The Drawn cards from the draw pile
         self.draw_pile : Deck = Deck([])           #Place to draw from
 
     def make_random_game(self, deck: Deck):
         #Fill the columns with the appropriate amount of cards
         for i in range(len(self.columns)):
-            self.columns[i] = self.Column(Deck(deck.draw_cards_face_down(i+1)))
+            self.columns[i] = Column(Deck(deck.draw_cards_face_down(i+1)))
         self.draw_pile = deck       #Assign the rest of the cards to the draw pile
 
     def display_board_not_hidden(self) -> None:
@@ -212,6 +219,15 @@ class Board:
         for column in self.columns:
             str_4 += f"{column.get_column_str_reavealed()}\n"
         print(str_0 + str_1 + str_2 + str_3 + str_4)
+
+    def move_column_to_column(self, column_1_index : int, column_2_index : int) -> None:
+        self.columns[column_2_index].add_card(self.columns[column_1_index].take_card())
+
+    def move_column_to_goal_area(self, column_index : int) -> None:
+        pass
+
+    def move_drawn_cards_to_column(self, column_index : int) -> None:
+        pass
 
     def __str__(self) -> str:
         str_0 : str = f"\n"
