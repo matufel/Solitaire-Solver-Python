@@ -195,6 +195,14 @@ class Board:
             self.areas =  None          
 
         def fill(area0 : list[Card], area1 : list[Card], area2 : list[Card], area3 : list[Card]):
+            """Fills the goal arrea
+
+            Args:
+                area0 (list[Card]): for pile 1
+                area1 (list[Card]): for pile 2
+                area2 (list[Card]): for pile 3
+                area3 (list[Card]): for pile 4
+            """
             pass
 
 
@@ -205,6 +213,11 @@ class Board:
         self.draw_pile : Deck = Deck([])           #Place to draw from
 
     def make_random_game(self, deck: Deck):
+        """Makes a random game with the given deck
+
+        Args:
+            deck (Deck): deck to use for the game
+        """
         #Fill the columns with the appropriate amount of cards
         for i in range(len(self.columns)):
             self.columns[i] = Column(Deck(deck.draw_cards_face_down(i+1)))
