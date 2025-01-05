@@ -224,6 +224,8 @@ class Board:
         self.draw_pile = deck       #Assign the rest of the cards to the draw pile
 
     def display_board_not_hidden(self) -> None:
+        """Displays the board without any hidden cards
+        """
         str_0 : str = f"\n"
         str_1 : str = f"##{self.draw_pile.size()}   \n"
         str_2 : str = f"##   {self.drawn_cards}     \n"
@@ -234,6 +236,12 @@ class Board:
         print(str_0 + str_1 + str_2 + str_3 + str_4)
 
     def move_column_to_column(self, column_1_index : int, column_2_index : int) -> None:
+        """Moves a card from column to column
+
+        Args:
+            column_1_index (int): index of column to move from 
+            column_2_index (int): index of column to move to 
+        """
         self.columns[column_2_index].add_card(self.columns[column_1_index].take_card())
 
     def move_column_to_goal_area(self, column_index : int) -> None:
