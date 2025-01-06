@@ -168,7 +168,7 @@ class Column:
             str_0 = ""
             for card in self.cards.view_top_cards_face_down(self.cards.size()):
                 str_0 += str(card)
-            return str_0
+            return str_0[:len(str_0) - 2*self.reavealed] +  "|" + str_0[len(str_0) - 2*self.reavealed:]
 
         def take_card(self) -> Card:
             return self.cards.draw_cards_face_down()
@@ -183,11 +183,7 @@ class Column:
                 str_1 += str(card)
             return str_0 + str_1
 
-class Board:
-    """Models the entire board including all of its areas. Needs a deck to be innitaited as it also places the cards 
-    in the approprriate palces.
-    """
-    class Goal_Area:
+class Goal_Area:
         """Models the goal area of the bord. Must have a valid SUITS global
         """
         def __init__(self):
@@ -205,9 +201,13 @@ class Board:
             """
             pass
 
+class Board:
+    """Models the entire board including all of its areas. Needs a deck to be innitaited as it also places the cards 
+    in the approprriate palces.
+    """
 
     def __init__(self):
-        self.goal_area : self.Goal_Area = self.Goal_Area() #Area where the cards should be placed to win
+        self.goal_area : Goal_Area = Goal_Area() #Area where the cards should be placed to win
         self.columns : list[Column] = [Column(Deck([])) for i in range(COLUMN_COUNT)] #Columns of cards on the main area. Each pile is treated as a face down deck
         self.drawn_cards : Deck = Deck([])     #The Drawn cards from the draw pile
         self.draw_pile : Deck = Deck([])           #Place to draw from
