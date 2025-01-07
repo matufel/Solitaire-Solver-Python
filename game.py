@@ -245,6 +245,11 @@ class Board:
         self.columns[column_2_index].add_card(self.columns[column_1_index].take_card())
 
     def move_column_to_goal_area(self, column_index : int) -> None:
+        """Moves a card off the column to the goal area
+
+        Args:
+            column_index (int): column to add the carrd from
+        """
         pass
 
     def move_drawn_cards_to_column(self, column_index : int) -> None:
