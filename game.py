@@ -253,7 +253,12 @@ class Board:
         pass
 
     def move_drawn_cards_to_column(self, column_index : int) -> None:
-        pass
+        """Moves a drawn card from the top of the drawn cards pile to a column
+
+        Args:
+            column_index (int): index of column to move card to
+        """
+        self.columns[column_index].add_card(self.drawn_cards.draw_cards_face_up())
 
     def __str__(self) -> str:
         str_0 : str = f"\n"
