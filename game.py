@@ -188,18 +188,11 @@ class Goal_Area:
         """
         def __init__(self):
             #Order of the areas in terms of suite is the same as of the global SUITS variable
-            self.areas =  None          
+            self.areas : list[Deck] = [Deck([]) for i in range(len(SUITES))]          
 
-        def fill(area0 : list[Card], area1 : list[Card], area2 : list[Card], area3 : list[Card]):
-            """Fills the goal arrea
-
-            Args:
-                area0 (list[Card]): for pile 1
-                area1 (list[Card]): for pile 2
-                area2 (list[Card]): for pile 3
-                area3 (list[Card]): for pile 4
-            """
-            pass
+        def add_card(self, card : Card):
+            card_suite = card.suite
+            self.areas[SUITES.index(card_suite)].add_card_face_up(card)
 
 class Board:
     """Models the entire board including all of its areas. Needs a deck to be innitaited as it also places the cards 
