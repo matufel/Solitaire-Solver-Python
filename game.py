@@ -184,7 +184,7 @@ class Column:
             return str_0 + str_1
 
 class Goal_Area:
-        """Models the goal area of the bord. Must have a valid SUITS global
+        """Models the goal area of the bord. Must have a valid SUITS global 
         """
         def __init__(self):
             #Order of the areas in terms of suite is the same as of the global SUITS variable
